@@ -18,6 +18,11 @@ def get_image():
         for file in os.listdir(current_folder):
             if file.endswith(".zip") and file.startswith("images"):
                 os.remove(file)
+                
+        # remove old images
+        for file in os.listdir(current_folder):
+            if file.endswith(".jpg") and file.startswith("Image"):
+                os.remove(file)
         image_names = generate_images.generate()
         image_name_1 = image_names[0]
         image_name_2 = image_names[1]
