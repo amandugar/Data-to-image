@@ -1,5 +1,5 @@
 from flask import Flask, jsonify, send_file
-# import generate_images
+import generate_images
 from zipfile import ZipFile
 import datetime
 import os
