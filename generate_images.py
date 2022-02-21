@@ -273,7 +273,7 @@ def generate():
   with open('index2.html', 'w') as f:
       f.write(html_string_2)
       
-  hti = Html2Image(custom_flags=['--disable-remote-debugging', '--default-background-color=white','--remote-debugging-port=0'])  
+  hti = Html2Image()  
       
   try: 
       hti.screenshot(html_file='index1.html',
