@@ -37,4 +37,4 @@ def get_image():
         return str(e)
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=False)
