@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from html2image import Html2Image
 
 #disable remote debugging
-hti = Html2Image(custom_flags=['--disable-remote-debugging', '--no-sandbox'])
+
 
 def generate():
   URL = 'https://modernalgos.com/dailymkt.aspx'
@@ -272,6 +272,8 @@ def generate():
 
   with open('index2.html', 'w') as f:
       f.write(html_string_2)
+      
+ hti = Html2Image(custom_flags=['--disable-remote-debugging', '--default-background-color=white'])  
       
   try: 
       hti.screenshot(html_file='index1.html',
