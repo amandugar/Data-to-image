@@ -3,6 +3,7 @@ import html_strings
 from bs4 import BeautifulSoup
 from html2image import Html2Image
 
+#disable remote debugging
 hti = Html2Image()
 
 def generate():
@@ -271,15 +272,18 @@ def generate():
 
   with open('index2.html', 'w') as f:
       f.write(html_string_2)
+      
+  try: 
+      hti.screenshot(html_file='index1.html',
+                    save_as='Image-1.jpg',
+                    size=(1200, 1200)
+                    )
 
-  hti.screenshot(html_file='index1.html',
-                save_as='Image-1.jpg',
-                size=(1200, 1200)
-                )
-
-  hti.screenshot(html_file='index2.html',
-                  save_as='Image-2.jpg',
-                  size=(1200, 1200)
-  )
+      hti.screenshot(html_file='index2.html',
+                      save_as='Image-2.jpg',
+                      size=(1200, 1200)
+    )
+  except:
+    print(e)
   
   return ['Image-1.jpg', 'Image-2.jpg']
