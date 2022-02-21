@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from html2image import Html2Image
 
 #disable remote debugging
-hti = Html2Image(['--disable-remote-debugging'])
+hti = Html2Image()
 
 def generate():
   URL = 'https://modernalgos.com/dailymkt.aspx'
