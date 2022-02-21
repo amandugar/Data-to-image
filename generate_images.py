@@ -1,7 +1,6 @@
 import requests
 import html_strings
 from bs4 import BeautifulSoup
-
 from html2image import Html2Image
 
 hti = Html2Image()

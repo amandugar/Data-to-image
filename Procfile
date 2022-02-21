@@ -1,1 +1,1 @@
-web: guincorn wsig:app
+web: guincorn app:app
