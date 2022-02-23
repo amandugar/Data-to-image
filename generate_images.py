@@ -130,6 +130,8 @@ def generate():
 
 	# last 5 are losers
 	top_losers = gainersAndLosers[-5:]
+	# sort low to high
+	top_losers.sort(key=lambda x: x['change_per'])
 
 	final_top_gainers = ''
 	for symbol in top_gainers:
