@@ -12,9 +12,27 @@ def generate():
 
 	soup = BeautifulSoup(r.text, 'html.parser')
 	table = soup.find('table', {'id': 'GridViewsocimedia1'})
-
+ 
+	count = 0
+	isChecked = False
+	start_count = 0
+	end_count = 0
+	for i, row in enumerate(table.find_all('tr')):
+		if i == 0:
+			continue
+		else:
+			text = row.find_all('td')[0].text.strip()
+			if isChecked == False:
+				if (text.strip()):
+					start_count = i
+					isChecked = True
+			if (not text):
+				break
+		count += 1
+	end_count = count+1
+ 
 	market_dashboard = []
-	for row in table.find_all('tr')[1:7]:
+	for row in table.find_all('tr')[start_count:end_count]:
 		symbol_obj = {}
 		for i, cell in enumerate(row.find_all('td')):
 			if i == 0:
@@ -59,7 +77,20 @@ def generate():
 			</div>'''
 
 	market_range = []
-	for row in table.find_all('tr')[9:11]:
+ 
+	isChecked = False
+	for i, row in enumerate(table.find_all('tr')[count:]):
+		text = row.find_all('td')[0].text.strip()
+		if text == 'Market Range':
+			isChecked = True
+			start_count = i + count + 1
+		if isChecked == True:
+			if (not text.strip()):
+				end_count = i + count
+				count = end_count
+				break
+ 
+	for row in table.find_all('tr')[start_count:end_count]:
 		rows_to_be_taken = [0, 4, 5, 6, 7, 8]
 		symbol_obj = {}
 		for i, cell in enumerate(row.find_all('td')):
@@ -107,9 +138,25 @@ def generate():
 			</div>
 		'''
 
-
-	gainersAndLosers = []
-	for row in table.find_all('tr')[14:24]:
+	isChecked = False
+	print(count)
+	for i, row in enumerate(table.find_all('tr')[count:]):
+		text = row.find_all('td')[0].text.strip()
+		print(text)
+		if text == 'Gainers/Losers':
+			isChecked = True
+			start_count = i + count + 1
+		if isChecked == True:
+			if (not text.strip()):
+				end_count = i + count
+				count = end_count
+				break
+	print(start_count, end_count)
+ 
+	
+	top_gainers = []
+	top_losers = []
+	for row in table.find_all('tr')[start_count:end_count]:
 		data = {}
 		for i, cell in enumerate(row.find_all('td')):
 			if i == 0:
@@ -120,17 +167,12 @@ def generate():
 				data['change_pts'] = cell.text
 			elif i == 3:
 				data['change_per'] = float(cell.text)
-		gainersAndLosers.append(data)
+		if data['change_per'] > 0:
+			top_gainers.append(data)
+		else:
+			top_losers.append(data)
 
-	# sort data by change_per
-	gainersAndLosers.sort(key=lambda x: x['change_per'], reverse=True)
-
-	# top 5 are gainers
-	top_gainers = gainersAndLosers[:5]
-
-	# last 5 are losers
-	top_losers = gainersAndLosers[-5:]
-	# sort low to high
+	top_gainers.sort(key=lambda x: x['change_per'], reverse=True)
 	top_losers.sort(key=lambda x: x['change_per'])
 
 	final_top_gainers = ''
@@ -169,11 +211,21 @@ def generate():
 						</p>
 						</div>
 						</div>'''
+
+	block_deals_count = 0
+	for i, row in enumerate(table.find_all('tr')[count:]):
+		text = row.find_all('td')[0].text.strip()
+		print(text)
+		if text == 'Block Details':
+			block_deals_count = i + count + 1
+			break	
+	print(block_deals_count)
+    
 	block_deals = {}
-	block_deals['symbol'] = table.find_all('tr')[27].find_all('td')[0].text
-	block_deals['trade_price'] = table.find_all('tr')[27].find_all('td')[9].text
-	block_deals['volume'] = table.find_all('tr')[27].find_all('td')[10].text
-	block_deals['buysell'] = table.find_all('tr')[27].find_all('td')[11].text
+	block_deals['symbol'] = table.find_all('tr')[block_deals_count].find_all('td')[0].text
+	block_deals['trade_price'] = table.find_all('tr')[block_deals_count].find_all('td')[9].text
+	block_deals['volume'] = table.find_all('tr')[block_deals_count].find_all('td')[10].text
+	block_deals['buysell'] = table.find_all('tr')[block_deals_count].find_all('td')[11].text
 
 	if block_deals['buysell'] == 'BUY':
 		block_deals['color'] = 'green-theme-1'
@@ -197,21 +249,38 @@ def generate():
 			</div>
 			'''
 
+	fii_count = 0
+	for i, row in enumerate(table.find_all('tr')[block_deals_count:]):
+		text = row.find_all('td')[12].text.strip()
+		print(text)
+		if text == 'FII':
+			fii_count = i + block_deals_count + 1
+			break
+	print(fii_count)
 	institutional_activity_fii = {}
 	institutional_activity_fii['buy_value'] = table.find_all(
-		'tr')[31].find_all('td')[12].text
+		'tr')[fii_count].find_all('td')[12].text
 	institutional_activity_fii['sell_value'] = table.find_all(
-		'tr')[31].find_all('td')[13].text
+		'tr')[fii_count].find_all('td')[13].text
 	institutional_activity_fii['net_value'] = table.find_all(
-		'tr')[31].find_all('td')[14].text
+		'tr')[fii_count].find_all('td')[14].text
+ 
+	dii_count = 0
+	for i, row in enumerate(table.find_all('tr')[fii_count:]):
+		text = row.find_all('td')[12].text.strip()
+		print(text)
+		if text == 'DII':
+			dii_count = i + fii_count + 1
+			break
+	print(dii_count)
 
 	institutional_activity_dii = {}
 	institutional_activity_dii['buy_value'] = table.find_all(
-		'tr')[35].find_all('td')[12].text
+		'tr')[dii_count].find_all('td')[12].text
 	institutional_activity_dii['sell_value'] = table.find_all(
-		'tr')[35].find_all('td')[13].text
+		'tr')[dii_count].find_all('td')[13].text
 	institutional_activity_dii['net_value'] = table.find_all(
-		'tr')[35].find_all('td')[14].text
+		'tr')[dii_count].find_all('td')[14].text
 
 	institutional_activity = f'''
 		<div class="grid grid-cols-2 items-center justify-around pt-4 px-24 w-full">
@@ -285,6 +354,7 @@ def generate():
 						save_as='Image-2.jpg',
 						size=(1200, 1200)
 	)
+		print('Success')
 	except:
 		print(e)
 
